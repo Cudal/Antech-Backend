@@ -17,6 +17,9 @@ router.get('/dashboard', adminAuth, async (req, res) => {
     // Get active users (users who have placed at least one order)
     const activeUsers = await Order.distinct('user').length;
 
+    // DEBUG LOG
+    console.log('DEBUG: This is the latest deployment!');
+
     // Calculate total revenue
     const orders = await Order.find();
     const totalRevenue = orders.reduce((sum, order) => sum + order.totalAmount, 0);
