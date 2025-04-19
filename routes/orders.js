@@ -53,6 +53,8 @@ router.post('/', auth, async (req, res) => {
       );
     }
 
+    console.log('Order Items to be saved:', JSON.stringify(orderItems, null, 2));
+
     await order.save();
     res.status(201).json(order);
   } catch (error) {
