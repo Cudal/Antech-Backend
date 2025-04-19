@@ -30,6 +30,15 @@ router.get('/dashboard', adminAuth, async (req, res) => {
       .limit(5)
       .populate('user', 'username email');
 
+    // RESPONSE DEBUG LOG
+    console.log('RESPONSE DEBUG:', {
+      totalProducts,
+      totalOrders,
+      activeUsers,
+      totalRevenue,
+      recentOrders
+    });
+
     res.json({
       totalProducts,
       totalOrders,
