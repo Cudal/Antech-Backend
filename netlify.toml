@@ -1,0 +1,13 @@
+[build]
+  command = "npm install"
+  functions = "functions"
+
+[dev]
+  framework = "#custom"
+  targetPort = 5000
+  command = "npm run dev"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/server/:splat"
+  status = 200
