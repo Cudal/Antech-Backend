@@ -15,7 +15,7 @@ router.get('/dashboard', adminAuth, async (req, res) => {
     const totalOrders = await Order.countDocuments();
 
     // Get active users (users who have placed at least one order)
-    const activeUsers = await Order.distinct('user').length;
+    const activeUsers = (await Order.distinct('user')).length;
 
     // DEBUG LOG
     console.log('DEBUG: This is the latest deployment!');
