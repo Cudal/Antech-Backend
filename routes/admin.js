@@ -11,11 +11,11 @@ router.get('/dashboard', adminAuth, async (req, res) => {
     // Get total products
     const totalProducts = await Product.countDocuments();
 
+    // Get total users (all users)
+    const totalUsers = await User.countDocuments();
+
     // Get total orders
     const totalOrders = await Order.countDocuments();
-
-    // Get active users (users who have placed at least one order)
-    const activeUsers = (await Order.distinct('user')).length;
 
     // DEBUG LOG
     console.log('DEBUG: This is the latest deployment!');
@@ -34,7 +34,7 @@ router.get('/dashboard', adminAuth, async (req, res) => {
     console.log('RESPONSE DEBUG:', {
       totalProducts,
       totalOrders,
-      activeUsers,
+      totalUsers,
       totalRevenue,
       recentOrders
     });
@@ -42,7 +42,7 @@ router.get('/dashboard', adminAuth, async (req, res) => {
     res.json({
       totalProducts,
       totalOrders,
-      activeUsers,
+      totalUsers,
       totalRevenue,
       recentOrders
     });
