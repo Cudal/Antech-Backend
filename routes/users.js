@@ -3,11 +3,20 @@ const router = express.Router();
 const User = require('../models/User');
 const { adminAuth } = require('../middleware/auth');
 
-// Get all users (admin only)
+// Get all users (admin only) with pagination
 router.get('/', adminAuth, async (req, res) => {
   try {
-    const users = await User.find().select('-password');
-    res.json(users);
+    // Parse page and limit from query, default to page 1, 10 users per page
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const [users, total] = await Promise.all([
+      User.find().select('-password').skip(skip).limit(limit),
+      User.countDocuments()
+    ]);
+
+    res.json({ users, total });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching users' });
   }
