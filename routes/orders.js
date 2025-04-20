@@ -76,7 +76,11 @@ router.get('/my-orders', auth, async (req, res) => {
 // Get all orders (admin only)
 router.get('/', adminAuth, async (req, res) => {
   try {
-    const orders = await Order.find()
+    const filter = {};
+    if (req.query.user) {
+      filter.user = req.query.user;
+    }
+    const orders = await Order.find(filter)
       .populate('user', 'username email');
     res.json(orders);
   } catch (error) {
