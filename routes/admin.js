@@ -3,7 +3,21 @@ const router = express.Router();
 const Order = require('../models/Order');
 const Product = require('../models/Product');
 const User = require('../models/User');
+const ShowcaseImage = require('../models/ShowcaseImage');
 const { adminAuth } = require('../middleware/auth');
+const multer = require('multer');
+const path = require('path');
+
+// Multer config for showcase image uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, '../public/showcase'));
+  },
+  filename: function (req, file, cb) {
+    cb(null, 'showcase-' + Date.now() + path.extname(file.originalname));
+  }
+});
+const upload = multer({ storage });
 
 // Get dashboard stats
 router.get('/dashboard', adminAuth, async (req, res) => {
@@ -49,6 +63,36 @@ router.get('/dashboard', adminAuth, async (req, res) => {
   } catch (error) {
     console.error('Dashboard Error:', error);
     res.status(500).json({ message: 'Error fetching dashboard data' });
+  }
+});
+
+// Get showcase image URL
+router.get('/showcase-image', async (req, res) => {
+  try {
+    const img = await ShowcaseImage.findOne();
+    res.json({ url: img ? img.url : null });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching showcase image' });
+  }
+});
+
+// Admin upload/change showcase image
+router.post('/showcase-image', adminAuth, upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ message: 'No image uploaded' });
+    const url = `/showcase/${req.file.filename}`;
+    let img = await ShowcaseImage.findOne();
+    if (img) {
+      img.url = url;
+      img.updatedAt = new Date();
+      await img.save();
+    } else {
+      img = new ShowcaseImage({ url });
+      await img.save();
+    }
+    res.json({ url });
+  } catch (error) {
+    res.status(500).json({ message: 'Error uploading showcase image' });
   }
 });
 
