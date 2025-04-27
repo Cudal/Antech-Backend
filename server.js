@@ -30,8 +30,12 @@ requiredEnvVars.forEach(varName => {
 const app = express();
 
 // Middleware
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://antech-frontend.netlify.app'
+];
 app.use(cors({
-  origin: process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, '') : 'http://localhost:3000',
+  origin: allowedOrigins,
   credentials: true
 }));
 app.use(express.json());
